@@ -52,5 +52,4 @@ def main():
         # Wait for 24 hours before sending the next update
         time.sleep(24 * 60 * 60)
 
-if __name__ == "__main__":
-    main()
+bot.run()
