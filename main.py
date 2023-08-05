@@ -1,11 +1,11 @@
 import time
 import requests
 from bs4 import BeautifulSoup
-from telegram import Bot, Update
+from telegram import Update, ParseMode
 from telegram.ext import Updater, CommandHandler, CallbackContext
 
 # Replace 'YOUR_BOT_TOKEN' with your actual Telegram Bot API token
-BOT_TOKEN = '6205563150:AAEcvLABRAyg6wgP74GvvKGzDbhzXoiEj8I'
+BOT_TOKEN = '6095676994:AAHSBNTqxITrrq54Wg7STJzggX0zLEWzQcc'
 CHANNEL_ID = '@hxzhsvsgsf'  # Replace with your channel username or ID
 DAILY_EPAPER_URL = 'https://www.dailyepaper.in/news-home/'  # Website URL where daily newspapers are hosted
 
@@ -28,8 +28,7 @@ def today(update: Update, _: CallbackContext):
     try:
         newspaper_link = get_newspaper_link()
         newspaper = download_newspaper(newspaper_link)
-        bot = Bot(token=BOT_TOKEN)
-        bot.send_document(chat_id=CHANNEL_ID, document=newspaper, caption="Here's today's newspaper!")
+        update.message.reply_document(document=newspaper, caption="Here's today's newspaper!")
     except Exception as e:
         update.message.reply_text("Sorry, there was an error while fetching the newspaper. Please try again later.")
 
