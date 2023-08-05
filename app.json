@@ -5,7 +5,7 @@
 
     "description": "A NEWSPAPER BOT.",
 
-    "repository": "https://github.com/Devid176/idu",
+    "repository": "https://github.com/Adarshpandeyji/Newspaper-daily-Update",
     "buildpacks":[
         {
         "url": "heroku/python"
