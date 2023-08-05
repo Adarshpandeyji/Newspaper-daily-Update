@@ -34,7 +34,7 @@ def today(update: Update, _: CallbackContext):
         update.message.reply_text("Sorry, there was an error while fetching the newspaper. Please try again later.")
 
 def main():
-    updater = Updater(token=BOT_TOKEN)
+    updater = Updater(BOT_TOKEN)
     dispatcher = updater.dispatcher
 
     # Add command handlers
