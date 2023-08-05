@@ -26,8 +26,11 @@ def get_newspaper_link():
     response = requests.get(DAILY_EPAPER_URL)
     response.raise_for_status()
     soup = BeautifulSoup(response.content, 'html.parser')
-    newspaper_link = soup.select_one('.title > a')['href']
-    return newspaper_link
+    newspaper_link = soup.select_one('.title > a')
+    if newspaper_link:
+        return newspaper_link['href']
+    else:
+        return None
 
 def download_newspaper(link):
     response = requests.get(link)
@@ -41,11 +44,15 @@ def main():
         try:
             news_headlines = get_news_headlines()
             newspaper_link = get_newspaper_link()
-            newspaper = download_newspaper(newspaper_link)
 
-            # Send news headlines and newspaper as separate messages
-            bot.send_message(chat_id=CHANNEL_ID, text="**Today's News Headlines:**\n" + news_headlines, parse_mode="Markdown")
-            bot.send_document(chat_id=CHANNEL_ID, document=newspaper, caption="Here's today's newspaper!")
+            if newspaper_link:
+                newspaper = download_newspaper(newspaper_link)
+
+                # Send news headlines and newspaper as separate messages
+                bot.send_message(chat_id=CHANNEL_ID, text="**Today's News Headlines:**\n" + news_headlines, parse_mode="Markdown")
+                bot.send_document(chat_id=CHANNEL_ID, document=newspaper, caption="Here's today's newspaper!")
+            else:
+                print("Newspaper link not found.")
         except Exception as e:
             print("Error while fetching updates:", e)
 
@@ -54,4 +61,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-            
