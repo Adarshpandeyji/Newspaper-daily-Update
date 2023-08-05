@@ -4,14 +4,12 @@ from bs4 import BeautifulSoup
 from telegram import Bot
 
 # Replace 'YOUR_BOT_TOKEN' with your actual Telegram Bot API token
-BOT_TOKEN = '6304691403:AAFjHrYRlbf8Z9ysJJ0kgTj5GTLbknvw_5c'
-CHANNEL_ID = '@newspapertest'  # Replace with your channel username or ID
-
+BOT_TOKEN = '6095676994:AAHSBNTqxITrrq54Wg7STJzggX0zLEWzQcc'
+CHANNEL_ID = '@hxzhsvsgsf'  # Replace with your channel username or ID
 DAILY_NEWS_URLS = [
     'https://newsonair.gov.in/hindi/Hindi-Default.aspx#collapseOne',
     'https://newsonair.gov.in/hindi/Hindi-Default.aspx#collapseTwo'
 ]
-
 DAILY_EPAPER_URL = 'https://www.dailyepaper.in/news-home/'  # Website URL where daily newspapers are hosted
 
 def get_news_headlines():
@@ -22,7 +20,6 @@ def get_news_headlines():
         soup = BeautifulSoup(response.content, 'html.parser')
         headlines = soup.select('.vertical-ticker h4')
         news_headlines.extend([headline.text.strip() for headline in headlines])
-
     return '\n'.join(news_headlines)
 
 def get_newspaper_link():
@@ -55,6 +52,5 @@ def main():
         # Wait for 24 hours before sending the next update
         time.sleep(24 * 60 * 60)
 
-
-    
-    bot.run()
+if __name__ == "__main__":
+    main()
