@@ -1,8 +1,8 @@
 import time
 import requests
 from bs4 import BeautifulSoup
-from telegram import Update, ParseMode
-from telegram.ext import Updater, CommandHandler, CallbackContext
+from telegram import Update
+from telegram.ext import Updater, CommandHandler, CallbackContext, ParseMode
 
 # Replace 'YOUR_BOT_TOKEN' with your actual Telegram Bot API token
 BOT_TOKEN = '6095676994:AAHSBNTqxITrrq54Wg7STJzggX0zLEWzQcc'
