@@ -14,7 +14,7 @@ def get_newspaper_link():
     response = requests.get(DAILY_EPAPER_URL)
     response.raise_for_status()
     soup = BeautifulSoup(response.content, 'html.parser')
-    newspaper_link = soup.select_one('.title > a')['href'
+    newspaper_link = soup.select_one('.title > a')['href']
     return newspaper_link
 
 def download_newspaper(link):
