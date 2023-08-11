@@ -4,8 +4,8 @@ from telegram import Bot, Update
 from telegram.ext import Updater, CommandHandler, CallbackContext
 
 # Replace 'YOUR_BOT_TOKEN' with your actual Telegram Bot API token
-BOT_TOKEN = 'YOUR_BOT_TOKEN'
-CHANNEL_ID = '@your_channel_name'  # Replace with your channel username or ID
+BOT_TOKEN = '6304691403:AAFjHrYRlbf8Z9ysJJ0kgTj5GTLbknvw_5c'
+CHANNEL_ID = '@newspapertest'  # Replace with your channel username or ID
 DAILY_EPAPER_URL = 'https://www.dailyepaper.in/news-home/'  # Website URL where daily newspapers are hosted
 
 def get_latest_newspaper_link():
