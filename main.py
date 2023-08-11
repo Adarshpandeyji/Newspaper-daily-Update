@@ -62,7 +62,7 @@ def main():
         entry_points=[CommandHandler('start', start)],
         states={
             SELECTING_PAPER: [CommandHandler('todaynewspaper', todaynewspaper)],
-            MessageHandler(Filters.text & ~Filters.command, select_paper),
+            MessageHandler(Filters.text & ~Filters.command, select_paper)
         },
         fallbacks=[],
     )
