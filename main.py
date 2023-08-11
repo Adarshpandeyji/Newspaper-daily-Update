@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from telegram import Bot
+from telegram import Bot, Update
 from telegram.ext import Updater, CommandHandler, CallbackContext
 
 # Replace 'YOUR_BOT_TOKEN' with your actual Telegram Bot API token
@@ -45,4 +45,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-  
+    
