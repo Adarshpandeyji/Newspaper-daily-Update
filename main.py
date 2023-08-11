@@ -5,54 +5,57 @@ from telegram.ext import Updater, CommandHandler, CallbackContext, ConversationH
 
 # Replace 'YOUR_BOT_TOKEN' with your actual Telegram Bot API token
 BOT_TOKEN = '6304691403:AAFjHrYRlbf8Z9ysJJ0kgTj5GTLbknvw_5c'
-CHANNEL_ID = '@Adam_Newsbot'  # Replace with your channel username or ID
-DAILY_EPAPER_URL = 'https://www.dailyepaper.in/news-home/'  # Website URL where daily newspapers are hosted
 
 # States for the conversation
-SELECTING_PAPER = 1
+SELECTING_NEWSPAPER, SELECTING_DATE = range(2)
 
-def get_available_papers():
-    response = requests.get(DAILY_EPAPER_URL)
+def get_today_newspapers():
+    response = requests.get('https://www.dailyepaper.in/news-home/')
     response.raise_for_status()
     soup = BeautifulSoup(response.content, 'html.parser')
-    papers = soup.select('.newsdate > a')
-    return [paper['href'] for paper in papers]
+    newspapers = soup.select('.newsdate > a')
+    return [newspaper.text.strip() for newspaper in newspapers]
 
 def start(update: Update, _: CallbackContext):
-    update.message.reply_text("Welcome to the Daily Newspaper Bot! Type /todaynewspaper to receive today's e-paper options.")
-    return SELECTING_PAPER
+    update.message.reply_text("Welcome to the Daily Newspaper Bot! Type /todaynews to get today's newspaper options.")
+    return SELECTING_NEWSPAPER
 
-def todaynewspaper(update: Update, context: CallbackContext):
-    available_papers = get_available_papers()
+def todaynews(update: Update, _: CallbackContext):
+    available_newspapers = get_today_newspapers()
 
-    if not available_papers:
-        update.message.reply_text("No e-papers available today.")
+    if not available_newspapers:
+        update.message.reply_text("No newspapers available today.")
         return ConversationHandler.END
 
-    options_text = "\n".join([f"{i + 1}. {paper}" for i, paper in enumerate(available_papers)])
-    update.message.reply_text(f"Today's available e-papers:\n{options_text}\n\nPlease choose a paper by typing its number.")
+    options_text = "\n".join([f"{i + 1}. {newspaper}" for i, newspaper in enumerate(available_newspapers)])
+    update.message.reply_text(f"Today's available newspapers:\n{options_text}\n\nPlease choose a newspaper by typing its number.")
 
-    context.user_data['available_papers'] = available_papers
-    return SELECTING_PAPER
+    context.user_data['available_newspapers'] = available_newspapers
+    return SELECTING_DATE
 
-def select_paper(update: Update, context: CallbackContext):
-    selected_paper_index = int(update.message.text) - 1
-    available_papers = context.user_data.get('available_papers', [])
+def select_newspaper(update: Update, context: CallbackContext):
+    selected_newspaper_index = int(update.message.text) - 1
+    available_newspapers = context.user_data.get('available_newspapers', [])
 
-    if 0 <= selected_paper_index < len(available_papers):
-        selected_paper_link = available_papers[selected_paper_index]
-        newspaper = download_newspaper(selected_paper_link)
-        bot = Bot(token=BOT_TOKEN)
-        bot.send_document(chat_id=CHANNEL_ID, document=newspaper, caption="Here's the selected e-paper!")
+    if 0 <= selected_newspaper_index < len(available_newspapers):
+        selected_newspaper = available_newspapers[selected_newspaper_index]
+        context.user_data['selected_newspaper'] = selected_newspaper
+        update.message.reply_text(f"You've selected {selected_newspaper}. Please enter the date in the format DD-MM-YYYY.")
+
+        return SELECTING_DATE
     else:
-        update.message.reply_text("Invalid selection. Please choose a valid paper number.")
+        update.message.reply_text("Invalid selection. Please choose a valid newspaper number.")
+
+def select_date(update: Update, context: CallbackContext):
+    selected_date = update.message.text.strip()
+
+    selected_newspaper = context.user_data.get('selected_newspaper')
+    newspaper_pdf_link = f"https://www.dailyepaper.in/{selected_newspaper.lower()}/{selected_date}.pdf"
+
+    bot = Bot(token=BOT_TOKEN)
+    bot.send_message(chat_id=update.effective_chat.id, text=f"Here's the PDF link for {selected_newspaper} dated {selected_date}:\n{newspaper_pdf_link}")
 
     return ConversationHandler.END
-
-def download_newspaper(link):
-    response = requests.get(link)
-    response.raise_for_status()
-    return response.content
 
 def main():
     updater = Updater(BOT_TOKEN)
@@ -61,8 +64,8 @@ def main():
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
         states={
-            SELECTING_PAPER: [CommandHandler('todaynewspaper', todaynewspaper)],
-            MessageHandler(Filters.text & ~Filters.command, select_paper),
+            SELECTING_NEWSPAPER: [CommandHandler('todaynews', todaynews)],
+            SELECTING_DATE: [MessageHandler(Filters.text & ~Filters.command, select_date)],
         },
         fallbacks=[],
     )
